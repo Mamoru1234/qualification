@@ -4,15 +4,16 @@ import org.challenge.qualification.entities.DelegateEntity
 import org.challenge.qualification.entities.VoteEntity
 import org.challenge.qualification.entities.VoteResultsEntity
 import org.challenge.qualification.votes.scanner.VoteResultType
+import java.util.*
 
 class VoteSessionAnalyserResult(
         val count: Int = 0,
-        val topics: List<String> = emptyList()
+        val voteResultIds: List<UUID> = emptyList()
 ) {
     operator fun plus( result: VoteSessionAnalyserResult): VoteSessionAnalyserResult {
         return VoteSessionAnalyserResult(
                 count = this.count + result.count,
-                topics = this.topics + result.topics
+                voteResultIds = this.voteResultIds + result.voteResultIds
         )
     }
 }
@@ -43,7 +44,7 @@ fun analyseVoteSession(
         val groups = splitOnTypeGroups(it.votes!!, voteResultTypes).filterValues { it.size > groupThreshold }
         val increment = VoteSessionAnalyserResult(
                 count = 1,
-                topics = listOf(it.topic)
+                voteResultIds = listOf(it.id)
         )
         groups.forEach { type, delegates ->
             result.iterator().forEach {

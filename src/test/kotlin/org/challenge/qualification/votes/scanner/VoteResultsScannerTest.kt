@@ -4,7 +4,6 @@ import com.itextpdf.text.pdf.PdfReader
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.matches
-import org.challenge.qualification.dtos.SessionInfo
 import org.junit.Test
 import java.io.FileInputStream
 import java.time.LocalDate

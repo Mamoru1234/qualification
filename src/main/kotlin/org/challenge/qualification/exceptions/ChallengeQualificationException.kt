@@ -2,6 +2,4 @@ package org.challenge.qualification.exceptions
 
 /**
  */
-class ChallengeQualificationException: Exception {
-    constructor(s: String=""): super(s)
-}
+class ChallengeQualificationException(s: String = "") : Exception(s)

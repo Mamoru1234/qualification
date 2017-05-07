@@ -1,4 +1,4 @@
-package org.challenge.qualification.dtos
+package org.challenge.qualification.votes.scanner
 
 import java.time.LocalDate
 

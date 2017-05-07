@@ -6,7 +6,6 @@ import com.natpryce.hamkrest.hasSize
 import org.challenge.qualification.entities.DelegateEntity
 import org.challenge.qualification.entities.VoteEntity
 import org.challenge.qualification.entities.VoteResultsEntity
-import org.challenge.qualification.entities.VoteSessionEntity
 import org.challenge.qualification.votes.scanner.VoteResultType
 import org.challenge.qualification.votes.scanner.VoteResultType.NEGATIVE
 import org.challenge.qualification.votes.scanner.VoteResultType.POSITIVE
@@ -24,12 +23,12 @@ class VoteSessionAnalyserTest {
         return result
     }
     fun generateVoteSessionEntity(
-            config: Map<String, List<Pair<VoteResultType, Int>>>,
+            config: Map<UUID, List<Pair<VoteResultType, Int>>>,
             delegates: List<DelegateEntity>
     ): List<VoteResultsEntity> {
         return config.entries.map {
                     VoteResultsEntity(
-                            topic = it.key,
+                            id = it.key,
                             votes = it.value.map { (result, delegateInd) ->
                                 VoteEntity(
                                         result = result,
@@ -43,7 +42,7 @@ class VoteSessionAnalyserTest {
     fun testVoteAnalyseSimplestCase() {
         val delegates = generateDelegates()
         val data = generateVoteSessionEntity(mapOf(
-                "Some" to listOf(
+                UUID.randomUUID() to listOf(
                         POSITIVE to 0,
                         NEGATIVE to 1
                 )
@@ -54,7 +53,7 @@ class VoteSessionAnalyserTest {
     @Test
     fun testVoteAnalyseNewDelegate() {
         val delegates = generateDelegates()
-        val topics = (1..2).map { UUID.randomUUID().toString() }
+        val topics = (1..2).map { UUID.randomUUID() }
         val data = generateVoteSessionEntity(mapOf(
                 topics[0] to listOf(
                         POSITIVE to 0,
@@ -67,14 +66,14 @@ class VoteSessionAnalyserTest {
         ), delegates)
         val result = analyseVoteSession(data)
         assertThat(result[setOf(delegates[1], delegates[2])]?.count, equalTo(1))
-        assertThat(result[setOf(delegates[1], delegates[2])]?.topics, equalTo(listOf(topics[1])))
+        assertThat(result[setOf(delegates[1], delegates[2])]?.voteResultIds, equalTo(listOf(topics[1])))
         assertThat(result.keys, hasSize(equalTo(1)))
     }
 
     @Test
     fun testVoteAnalyseThroughIntersection() {
         val delegates = generateDelegates()
-        val topics = (1..3).map { UUID.randomUUID().toString() }
+        val topics = (1..3).map { UUID.randomUUID() }
         val data = generateVoteSessionEntity(mapOf(
                 topics[0] to listOf(
                         NEGATIVE to 0,
@@ -104,7 +103,7 @@ class VoteSessionAnalyserTest {
         assertThat(result[setOf(delegates[0], delegates[1])]?.count, equalTo(2))
         assertThat(result[setOf(delegates[2], delegates[3], delegates[4])]?.count, equalTo(1))
         assertThat(result[setOf(delegates[2], delegates[3])]?.count, equalTo(3))
-        assertThat(result[setOf(delegates[2], delegates[3])]?.topics, equalTo(topics))
+        assertThat(result[setOf(delegates[2], delegates[3])]?.voteResultIds, equalTo(topics))
         assertThat(result[setOf(delegates[0], delegates[1], delegates[4])]?.count, equalTo(1))
         assertThat(result.keys, hasSize(equalTo(6)))
     }

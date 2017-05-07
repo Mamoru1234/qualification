@@ -52,4 +52,4 @@ dependencies {
     testCompile group: 'com.natpryce', name: 'hamkrest', version: '1.4.0.0'
 }
 
-//bootRun.dependsOn(flywayMigrate)
+bootRun.dependsOn(flywayMigrate)

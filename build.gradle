@@ -22,9 +22,9 @@ apply plugin: "org.springframework.boot"
 apply plugin: "org.flywaydb.flyway"
 
 flyway {
-    url = 'jdbc:postgresql://localhost:5432/postgres'
+    url = 'jdbc:postgresql://localhost:5432/qualification'
     user = 'postgres'
-    password = 'test'
+    password = 'challenge_2017'
 }
 
 repositories {
@@ -52,4 +52,4 @@ dependencies {
     testCompile group: 'com.natpryce', name: 'hamkrest', version: '1.4.0.0'
 }
 
-bootRun.dependsOn(flywayMigrate)
+//bootRun.dependsOn(flywayMigrate)

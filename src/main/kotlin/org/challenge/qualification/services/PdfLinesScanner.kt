@@ -15,6 +15,7 @@ class PdfLinesScanner(
 
     fun hasNextLine() = currentPage <= reader.numberOfPages
             || currentScanner?.hasNextLine()?:false
+
     private fun nextPage() {
         currentScanner = Scanner(PdfTextExtractor.getTextFromPage(reader, currentPage))
         currentPage++

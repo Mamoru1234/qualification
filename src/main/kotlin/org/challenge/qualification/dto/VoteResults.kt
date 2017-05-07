@@ -6,5 +6,6 @@ enum class VoteResultType {
 
 data class VoteResults(
         val topic: String,
-        val votes: Map<String, VoteResultType>
+        val voteMetaData: String,
+        val votes: Map<Delegate, VoteResultType>
 )

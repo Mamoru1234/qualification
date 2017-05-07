@@ -97,14 +97,13 @@ class VoteSessionAnalyserTest {
                         NEGATIVE to 4
                 )
         ), delegates)
-        val result = analyseVoteSession(data)
+        var result = analyseVoteSession(data)
         assertThat(result[setOf(delegates[0], delegates[4])]?.count, equalTo(2))
-        assertThat(result[setOf(delegates[1], delegates[2], delegates[3])]?.count, equalTo(1))
         assertThat(result[setOf(delegates[0], delegates[1])]?.count, equalTo(2))
-        assertThat(result[setOf(delegates[2], delegates[3], delegates[4])]?.count, equalTo(1))
         assertThat(result[setOf(delegates[2], delegates[3])]?.count, equalTo(3))
         assertThat(result[setOf(delegates[2], delegates[3])]?.voteResultIds, equalTo(topics))
-        assertThat(result[setOf(delegates[0], delegates[1], delegates[4])]?.count, equalTo(1))
+        assertThat(result.keys, hasSize(equalTo(3)))
+        result = analyseVoteSession(data, groupThreshold = 10)
         assertThat(result.keys, hasSize(equalTo(6)))
     }
 }

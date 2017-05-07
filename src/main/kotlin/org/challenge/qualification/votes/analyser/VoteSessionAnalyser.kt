@@ -32,24 +32,29 @@ private fun splitOnTypeGroups(
     return result
 }
 
+val GROUP_MIN_SIZE = 2
 /**
  */
 fun analyseVoteSession(
         voteResults: List<VoteResultsEntity>?,
         voteResultTypes: List<VoteResultType> = VoteResultType.values().toList(),
-        groupThreshold: Int = 1
+        groupThreshold: Int = 90
 ): Map<Set<DelegateEntity>, VoteSessionAnalyserResult> {
     var result = emptyMap<Set<DelegateEntity>, VoteSessionAnalyserResult>()
-    voteResults?.forEach {
-        val groups = splitOnTypeGroups(it.votes!!, voteResultTypes).filterValues { it.size > groupThreshold }
+    val threshold = voteResults?.size?.let { (groupThreshold/100f)*it } ?:0f
+    println("threshold:$threshold")
+    voteResults?.forEachIndexed { index, voteResultsEntity ->
+        val recordsLeft = voteResults.size - index
+        val groups = splitOnTypeGroups(voteResultsEntity.votes!!, voteResultTypes)
+                .filterValues { it.size >= GROUP_MIN_SIZE }
         val increment = VoteSessionAnalyserResult(
                 count = 1,
-                voteResultIds = listOf(it.id)
+                voteResultIds = listOf(voteResultsEntity.id)
         )
-        groups.forEach { type, delegates ->
-            result.iterator().forEach {
+        groups.forEach { _, delegates ->
+            result.entries.forEach {
                 val intersection = it.key.intersect(delegates)
-                if (intersection.size > groupThreshold && intersection != delegates) {
+                if (intersection.size >= GROUP_MIN_SIZE && intersection != delegates) {
                     var count = result.getOrDefault(intersection, VoteSessionAnalyserResult())
                     if (it.key != intersection) {
                           count += it.value
@@ -59,6 +64,9 @@ fun analyseVoteSession(
             }
             val count = result.getOrDefault(delegates, VoteSessionAnalyserResult()) + increment
             result += delegates to count
+        }
+        result = result.filterValues {
+            (it.count + recordsLeft) >= threshold
         }
     }
     return result

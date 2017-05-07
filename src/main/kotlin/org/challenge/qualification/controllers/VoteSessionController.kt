@@ -35,8 +35,14 @@ class VoteSessionController(
     ) = voteResultsDao.findByVoteSessionId(id, PageRequest(pageNumber?:0, limit?:10))
             .map(::voteResultsEntityToDto)
 
+    /**
+     * Аналіз зон впливу зроблений в рамках 1 сесії
+     * @param accept - Перелік типів результатів голосування потрібних для аналізу напркилад POSITIVE - буде
+     * виключить з аналізу всі результати окрім "За"
+     * @param groupThreshold - мінімальний відстоток від загальних голосуваннь однакових голосуванб для групи
+     */
     @GetMapping("/{id}/analyse")
-    fun getVoteResultsAnalys(
+    fun getVoteResultsAnalyse(
             @PathVariable id: UUID,
             @RequestParam(name = "page", required = false) pageNumber: Int?,
             @RequestParam(name = "limit", required = false) limit: Int?,

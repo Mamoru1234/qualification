@@ -44,7 +44,6 @@ open class DataSetService(
         val zipFile = ZipFile(File(folder, "temp.zip"))
         zipFile.extractAll(filesFolder.absolutePath)
         filesFolder.listFiles().forEach {
-            println("File: ${it.name}")
             log.debug {
                 "File: ${it.name}"
             }

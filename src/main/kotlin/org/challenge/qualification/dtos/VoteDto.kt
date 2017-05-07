@@ -1,5 +1,6 @@
-package org.challenge.qualification.dto
+package org.challenge.qualification.dtos
 
+import org.challenge.qualification.votes.scanner.VoteResultType
 import java.util.*
 
 /**

@@ -1,13 +1,9 @@
 package org.challenge.qualification.controllers
 
-import org.challenge.qualification.dao.DataSetDao
-import org.challenge.qualification.dao.VoteResultsDao
-import org.challenge.qualification.dao.VoteSessionDao
-import org.challenge.qualification.dto.DataSetDto
-import org.challenge.qualification.entity.dataSetEntityToDto
-import org.challenge.qualification.entity.voteEntityToDto
-import org.challenge.qualification.entity.voteResultsEntityToDto
-import org.challenge.qualification.entity.voteSessionEntityToDto
+import org.challenge.qualification.daos.DataSetDao
+import org.challenge.qualification.dtos.DataSetDto
+import org.challenge.qualification.entities.dataSetEntityToDto
+import org.challenge.qualification.entities.voteSessionEntityToDto
 import org.challenge.qualification.services.DataSetService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -18,11 +14,9 @@ import java.util.*
 /**
  */
 @RestController
-    @RequestMapping("/data_set")
+@RequestMapping("/data_set")
 class DataSetController(
         val dataSetDao: DataSetDao,
-        val voteResultsDao: VoteResultsDao,
-        val voteSessionDao: VoteSessionDao,
         val dataSetService: DataSetService
 ) {
     companion object{
@@ -39,14 +33,10 @@ class DataSetController(
     @GetMapping
     fun getAll() = dataSetDao.findAll().map(::dataSetEntityToDto)
 
-    @GetMapping("{id}/sessions")
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: UUID) = dataSetEntityToDto(dataSetDao.findOne(id))
+
+    @GetMapping("/{id}/sessions")
     fun getVoteSessions (@PathVariable id: UUID) = dataSetDao.findOne(id).sessions
             ?.map(::voteSessionEntityToDto)
-
-    @GetMapping("session/{id}/vote_results")
-    fun getSession(@PathVariable id: UUID) = voteSessionDao.findOne(id).voteResults
-            ?.map(::voteResultsEntityToDto)
-    @GetMapping("vote_results/{id}/votes")
-    fun getVotes(@PathVariable id: UUID) = voteResultsDao.findOne(id).votes
-            ?.map(::voteEntityToDto)
 }

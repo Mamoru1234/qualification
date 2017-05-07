@@ -1,10 +1,10 @@
-package org.challenge.qualification.dto
+package org.challenge.qualification.dtos
 
 import java.util.*
 
 /**
  */
-data class Delegate (
+data class DelegateDto(
         val id: UUID? = null,
         val firstName: String,
         val middleName: String,

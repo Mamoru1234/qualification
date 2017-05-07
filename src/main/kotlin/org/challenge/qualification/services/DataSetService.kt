@@ -3,10 +3,10 @@ package org.challenge.qualification.services
 import com.itextpdf.text.pdf.PdfReader
 import net.lingala.zip4j.core.ZipFile
 import org.apache.tomcat.util.http.fileupload.FileUtils
-import org.challenge.qualification.dao.*
-import org.challenge.qualification.dto.Delegate
-import org.challenge.qualification.entity.*
+import org.challenge.qualification.daos.*
+import org.challenge.qualification.entities.*
 import org.challenge.qualification.extensions.debug
+import org.challenge.qualification.votes.scanner.VoteResultsScanner
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -27,13 +27,6 @@ open class DataSetService(
 ){
     companion object{
         val log: Logger = LoggerFactory.getLogger(DataSetService::class.java.canonicalName)
-    }
-    private fun findByDelegate(delegate:Delegate): (DelegateEntity) -> Boolean {
-        return {
-            it.firstName == delegate.firstName
-                    && it.middleName == delegate.middleName
-                    && it.lastName == delegate.lastName
-        }
     }
     @Transactional
     open fun uploadDataSet(dataSetInputStream: InputStream): DataSetEntity {
@@ -80,7 +73,7 @@ open class DataSetService(
                                 log.debug{
                                     "New delegate $delegate"
                                 }
-                                delegateEntity = delegateEntityFromDto(delegate)
+                                delegateEntity = delegateEntityFrom(delegate)
                                 newDelegateEntities += delegateEntity
                             }
                             VoteEntity(

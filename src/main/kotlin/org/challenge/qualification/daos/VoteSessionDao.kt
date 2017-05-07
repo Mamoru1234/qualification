@@ -1,6 +1,6 @@
-package org.challenge.qualification.dao
+package org.challenge.qualification.daos
 
-import org.challenge.qualification.entity.VoteSessionEntity
+import org.challenge.qualification.entities.VoteSessionEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.util.*

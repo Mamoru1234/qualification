@@ -1,6 +1,6 @@
 package org.challenge.qualification.converters
 
-import org.challenge.qualification.dto.VoteResultType
+import org.challenge.qualification.votes.scanner.VoteResultType
 import javax.persistence.AttributeConverter
 import javax.persistence.Converter
 

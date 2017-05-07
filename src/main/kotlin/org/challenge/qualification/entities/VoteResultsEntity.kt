@@ -1,6 +1,6 @@
-package org.challenge.qualification.entity
+package org.challenge.qualification.entities
 
-import org.challenge.qualification.dto.VoteResultsDto
+import org.challenge.qualification.dtos.VoteResultsDto
 import org.hibernate.annotations.Type
 import java.util.*
 import javax.persistence.*

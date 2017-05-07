@@ -1,12 +1,10 @@
 package org.challenge.qualification.controllers
 
-import org.challenge.qualification.dao.DelegateDao
-import org.challenge.qualification.entity.delegateEntityToDto
-import org.challenge.qualification.entity.voteEntityToDto
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.challenge.qualification.daos.DelegateDao
+import org.challenge.qualification.entities.delegateEntityToDto
+import org.challenge.qualification.entities.voteEntityToDto
+import org.springframework.data.domain.PageRequest
+import org.springframework.web.bind.annotation.*
 import java.util.*
 
 /**
@@ -20,7 +18,13 @@ class DelegateController (
     @GetMapping
     fun getAll() = delegateDao.findAll().map(::delegateEntityToDto)
 
-    @GetMapping("/{id}/info")
+    @GetMapping("/pagination")
+    fun getPage(
+            @RequestParam(value = "page", required = false) pageNumber: Int?,
+            @RequestParam(value = "limit", required = false) limit: Int?
+    ) = delegateDao.findAll(PageRequest(pageNumber?:0, limit?:10)).map(::delegateEntityToDto)
+
+    @GetMapping("/{id}")
     fun getById(@PathVariable id: UUID) = delegateEntityToDto(delegateDao.findOne(id))
 
     @GetMapping("/{id}/votes")

@@ -1,6 +1,6 @@
-package org.challenge.qualification.entity
+package org.challenge.qualification.entities
 
-import org.challenge.qualification.dto.VoteSessionDto
+import org.challenge.qualification.dtos.VoteSessionDto
 import org.hibernate.annotations.Type
 import java.time.LocalDate
 import java.util.*

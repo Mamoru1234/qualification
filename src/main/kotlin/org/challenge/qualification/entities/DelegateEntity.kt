@@ -1,6 +1,7 @@
-package org.challenge.qualification.entity
+package org.challenge.qualification.entities
 
-import org.challenge.qualification.dto.Delegate
+import org.challenge.qualification.dtos.DelegateDto
+import org.challenge.qualification.votes.scanner.Delegate
 import org.hibernate.annotations.Type
 import java.util.*
 import javax.persistence.*
@@ -22,7 +23,7 @@ data class DelegateEntity(
         var votes: List<VoteEntity>? = null
 )
 
-fun delegateEntityFromDto(delegate: Delegate): DelegateEntity {
+fun delegateEntityFrom(delegate: Delegate): DelegateEntity {
         return DelegateEntity(
                 firstName = delegate.firstName,
                 lastName = delegate.lastName,
@@ -30,11 +31,19 @@ fun delegateEntityFromDto(delegate: Delegate): DelegateEntity {
         )
 }
 
-fun delegateEntityToDto(delegateEntity: DelegateEntity): Delegate {
-        return Delegate(
+fun delegateEntityToDto(delegateEntity: DelegateEntity): DelegateDto {
+        return DelegateDto(
                 id = delegateEntity.id,
                 firstName = delegateEntity.firstName,
                 middleName = delegateEntity.middleName,
                 lastName = delegateEntity.lastName
         )
+}
+
+fun findByDelegate(delegate: Delegate): (DelegateEntity) -> Boolean {
+        return {
+                it.firstName == delegate.firstName
+                        && it.middleName == delegate.middleName
+                        && it.lastName == delegate.lastName
+        }
 }

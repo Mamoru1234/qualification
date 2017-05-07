@@ -1,4 +1,4 @@
-package org.challenge.qualification.dto
+package org.challenge.qualification.votes.scanner
 
 enum class VoteResultType {
     POSITIVE, NEGATIVE, ABSTAINED, IGNORED, ABSENT

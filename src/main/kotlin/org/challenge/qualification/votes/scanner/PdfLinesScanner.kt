@@ -1,4 +1,4 @@
-package org.challenge.qualification.services
+package org.challenge.qualification.votes.scanner
 
 import com.itextpdf.text.pdf.PdfReader
 import com.itextpdf.text.pdf.parser.PdfTextExtractor
@@ -7,7 +7,7 @@ import java.util.*
 
 class PdfLinesScanner(
         private val reader: PdfReader
-):Closeable{
+): Closeable {
     override fun close() = reader.close()
 
     private var currentPage = 1

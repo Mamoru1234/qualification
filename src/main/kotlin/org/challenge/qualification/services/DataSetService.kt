@@ -27,7 +27,7 @@ open class DataSetService(
         val voteDao: VoteDao
 ){
     companion object{
-        val log: Logger = LoggerFactory.getLogger(DataSetService::class.java.canonicalName)
+        val log: Logger = LoggerFactory.getLogger(DataSetService::class.java)
     }
 
     @Transactional

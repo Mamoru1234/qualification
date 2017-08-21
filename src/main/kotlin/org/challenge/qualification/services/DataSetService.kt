@@ -50,8 +50,7 @@ open class DataSetService(
                 "File: ${it.name}"
             }
             VoteResultsScanner(PdfReader(it.inputStream())).use { votesScanner ->
-                val sessionInfo = votesScanner.getSessionInfo()
-                sessionInfo!!
+                val sessionInfo = votesScanner.getSessionInfo()!!
                 val voteSession = VoteSessionEntity(
                         sessionNumber = sessionInfo.sessionNumber,
                         sessionDate = sessionInfo.sessionDate,

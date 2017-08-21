@@ -6,6 +6,7 @@ import org.apache.tomcat.util.http.fileupload.FileUtils
 import org.challenge.qualification.daos.*
 import org.challenge.qualification.entities.*
 import org.challenge.qualification.extensions.debug
+import org.challenge.qualification.votes.scanner.VoteResults
 import org.challenge.qualification.votes.scanner.VoteResultsScanner
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,6 +29,7 @@ open class DataSetService(
     companion object{
         val log: Logger = LoggerFactory.getLogger(DataSetService::class.java.canonicalName)
     }
+
     @Transactional
     open fun uploadDataSet(dataSetInputStream: InputStream): DataSetEntity {
         val dataSet = DataSetEntity()
@@ -58,39 +60,43 @@ open class DataSetService(
                 voteSessionDao.save(voteSession)
                 do {
                     val voteResult = votesScanner.nextVoteResult()
-                    if (voteResult != null) {
-                        val delegateEntitiesInDB = delegateDao.findAll()
-                        var newDelegateEntities = emptyList<DelegateEntity>()
-                        val voteResultEntity = voteResultsDao.save(VoteResultsEntity(
-                                topic = voteResult.topic,
-                                metaData = voteResult.voteMetaData,
-                                voteSession = voteSession
-                        ))
-                        val voteEntities = voteResult.votes.map { (delegate, voteResult) ->
-                            var delegateEntity = delegateEntitiesInDB.find(findByDelegate(delegate))
-                            if (delegateEntity == null) {
-                                log.debug{
-                                    "New delegate $delegate"
-                                }
-                                delegateEntity = delegateEntityFrom(delegate)
-                                newDelegateEntities += delegateEntity
+                            ?.let {
+                                insertVoteResults(it, voteSession)
                             }
-                            VoteEntity(
-                                    result = voteResult,
-                                    delegate = delegateEntity,
-                                    voteResults = voteResultEntity
-                            )
-                        }
-                        delegateDao.save(newDelegateEntities)
-                        voteDao.save(voteEntities)
-                        log.debug {
-                            "Topic: ${voteResult.topic}"
-                        }
-                    }
                 }while (voteResult != null)
             }
         }
         FileUtils.deleteDirectory(folder)
         return dataSet
+    }
+
+    private fun insertVoteResults(voteResult: VoteResults, voteSession: VoteSessionEntity) {
+        val delegateEntitiesInDB = delegateDao.findAll()
+        var newDelegateEntities = emptyList<DelegateEntity>()
+        val voteResultEntity = voteResultsDao.save(VoteResultsEntity(
+                topic = voteResult.topic,
+                metaData = voteResult.voteMetaData,
+                voteSession = voteSession
+        ))
+        val voteEntities = voteResult.votes.map { (delegate, voteResult) ->
+            var delegateEntity = delegateEntitiesInDB.find(findByDelegate(delegate))
+            if (delegateEntity == null) {
+                log.debug {
+                    "New delegate $delegate"
+                }
+                delegateEntity = delegateEntityFrom(delegate)
+                newDelegateEntities += delegateEntity
+            }
+            VoteEntity(
+                    result = voteResult,
+                    delegate = delegateEntity,
+                    voteResults = voteResultEntity
+            )
+        }
+        delegateDao.save(newDelegateEntities)
+        voteDao.save(voteEntities)
+        log.debug {
+            "Topic: ${voteResult.topic}"
+        }
     }
 }
